@@ -45,9 +45,9 @@ export class InjectableCompilerAdapter implements CompilerAdapter<R3InjectableMe
  * Read metadata from the `@Injectable` decorator and produce the `IvyInjectableMetadata`, the input
  * metadata needed to run `compileIvyInjectable`.
  */
-function extractInjectableMetadata(
+export function extractInjectableMetadata(
     clazz: ts.ClassDeclaration, decorator: Decorator,
-    checker: ts.TypeChecker): R3InjectableMetadata {
+    checker: ts.TypeChecker, getConstructorDeps = getConstructorDependencies): R3InjectableMetadata {
   if (clazz.name === undefined) {
     throw new Error(`@Injectables must have names`);
   }
@@ -58,7 +58,7 @@ function extractInjectableMetadata(
       name,
       type,
       providedIn: new LiteralExpr(null),
-      deps: getConstructorDependencies(clazz, checker),
+      deps: getConstructorDeps(clazz, checker),
     };
   } else if (decorator.args.length === 1) {
     const metaNode = decorator.args[0];
@@ -97,7 +97,7 @@ function extractInjectableMetadata(
       }
       return {name, type, providedIn, useFactory: factory, deps};
     } else {
-      const deps = getConstructorDependencies(clazz, checker);
+      const deps = getConstructorDeps(clazz, checker);
       return {name, type, providedIn, deps};
     }
   } else {
