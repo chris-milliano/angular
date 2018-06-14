@@ -11,6 +11,9 @@ import { CheckForUpdateService } from './check-for-update.service';
 import { LogUpdateService } from './log-update.service';
 import { PromptUpdateService } from './prompt-update.service';
 
+
+const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
 // #docregion sw-module
 @NgModule({
   declarations: [
@@ -18,7 +21,7 @@ import { PromptUpdateService } from './prompt-update.service';
   ],
   imports: [
     BrowserModule,
-    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production})
+    ServiceWorkerModule.register('/ngsw-worker.js', {enabled: environment.production && isSecure})
   ],
   providers: [
     CheckForUpdateService,
